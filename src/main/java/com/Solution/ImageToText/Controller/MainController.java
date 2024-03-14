@@ -80,7 +80,7 @@ public class MainController {
 	    		// deletging file
 	    		File file2 = new File("src\\\\main\\\\resources\\\\static\\\\images\\"+fileName);
 
-	            // Check if the file exists
+	            // Check if the file exist
 	            if (file2.exists()) {
 	                // Attempt to delete the file
 	                if (file2.delete()) {
