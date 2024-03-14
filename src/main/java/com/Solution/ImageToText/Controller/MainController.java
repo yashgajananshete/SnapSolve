@@ -24,8 +24,6 @@ import org.springframework.util.StringUtils;
 
 @Controller
 public class MainController {
-//	@Autowired
-//	ChatGPTAPIExample gpt;
 
 	@Autowired
 	TextScanning scanning;
@@ -39,23 +37,6 @@ public class MainController {
 	public String index() {
 		return "index";
 	}
-//	@RequestMapping("/ai")
-//	public String AI() {
-//		String Text = scanning.Scan("question1");
-//		ChatResponse response = chatClient.call(new Prompt(Text,
-//				OpenAiChatOptions.builder().withModel("gpt-3.5-turbo-0125").withTemperature((float) 0.4).build()));
-//		JSONObject jsonObject = new JSONObject(response);
-//
-//		// Extract content from output object
-//		JSONObject resultObject = jsonObject.getJSONObject("result");
-//		JSONObject outputObject = resultObject.getJSONObject("output");
-//		String content = outputObject.getString("content");
-//
-//		// Print the extracted content
-//		System.out.println("Extracted content:");
-//		System.out.println(content);
-//		return "index";
-//	}
 	
 	 @PostMapping("/upload")
 	    public String handleFileUpload(@RequestParam("image") MultipartFile file, Model model) {
