@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 import org.json.JSONObject;
 import org.springframework.ai.chat.ChatClient;
@@ -12,6 +13,7 @@ import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.Solution.ImageToText.Dao.ImageToTextRepo;
+import com.Solution.ImageToText.service.ImageService;
+
 import org.springframework.util.StringUtils;
 
 @Controller
@@ -30,17 +36,26 @@ public class MainController {
 
 	@Autowired
 	ChatClient chatClient;
-
+	@Value("${OPENAI_API_KEY}")
+	String apiKey;
+	
+	@Autowired
+	ImageService iService;
+	
 	Prompt prompt;
 	
 	@RequestMapping("/")
 	public String index() {
+		System.out.println(apiKey);
 		return "index";
 	}
 	
 	 @PostMapping("/upload")
-	    public String handleFileUpload(@RequestParam("image") MultipartFile file, Model model) {
+	    public String handleFileUpload(@RequestParam("image") MultipartFile file, Model model) throws IOException {
 	        // Check if the file is empty
+		 
+		 System.out.println(file.getContentType());
+		 System.out.println("hello");
 	        if (file.isEmpty()) {
 	            return "index"; // or redirect to the index page
 	        }
@@ -48,8 +63,15 @@ public class MainController {
 	        	String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		        System.out.println(fileName);
 		        
-
-	        // Define the directory on the "D" drive where you want to save the files
+		     iService.saveImageToDatabase(file);
+		     try {
+				byte[] getImage = iService.getImageFromDatabase();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		     // Define the directory on the "D" drive where you want to save the files
 	        String uploadDir = "src\\main\\resources\\static\\images";
 
 	        try {
@@ -59,12 +81,12 @@ public class MainController {
 	            // Save the file to the specified location
 	            Files.copy(file.getInputStream(), filePath);
 	            String Text = scanning.Scan(fileName);
-	            
+	            System.out.println("Text From main Controller: " +  Text);
+	            System.out.println("fileName:  "+fileName);
 //	            String Text = scanning.Scan("question1");
-	    		ChatResponse response = chatClient.call(new Prompt(Text,
-	    				OpenAiChatOptions.builder().withModel("gpt-3.5-turbo-0125").withTemperature((float) 0.4).build()));
+	    		ChatResponse response = chatClient.call(new Prompt(Text,OpenAiChatOptions.builder().withModel("gpt-3.5-turbo-0125").withTemperature((float) 0.4).build()));
 	    		JSONObject jsonObject = new JSONObject(response);
-
+	    		System.out.println("response"+ response);
 	    		// Extract content from output object
 	    		JSONObject resultObject = jsonObject.getJSONObject("result");
 	    		JSONObject outputObject = resultObject.getJSONObject("output");
@@ -79,7 +101,7 @@ public class MainController {
 	    		
 	    		// deletging file
 	    		File file2 = new File("src\\\\main\\\\resources\\\\static\\\\images\\"+fileName);
-
+	    		iService.deleteAllImages();
 	            // Check if the file exist
 	            if (file2.exists()) {
 	                // Attempt to delete the file
@@ -100,5 +122,7 @@ public class MainController {
 	            e.printStackTrace();
 	            return "index"; // or redirect to the index page
 	        }
+	        
+	        
 	    }
 }
