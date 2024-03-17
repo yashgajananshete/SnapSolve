@@ -18,7 +18,7 @@ import net.sourceforge.tess4j.Tesseract;
 public class TextScanning {
 	@Autowired
 	ImageService iService;
-	public String Scan(String fileName) {
+	public String Scan() {
 		String text="";
 		String oneLineString=" ";
 		String text1 ="below is the question give me only ans for that not explanation";
