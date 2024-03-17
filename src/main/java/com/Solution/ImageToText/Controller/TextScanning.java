@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.Solution.ImageToText.service.ImageService;
@@ -16,9 +17,14 @@ import net.sourceforge.tess4j.Tesseract;
 
 @Service
 public class TextScanning {
+	
+	@Value("${tess4j.tessdata.path}")
+    private String tessDataPath;
+	
 	@Autowired
 	ImageService iService;
 	public String Scan() {
+		System.out.println(tessDataPath);
 		String text="";
 		String oneLineString=" ";
 		String text1 ="below is the question give me only ans for that not explanation";
@@ -36,7 +42,7 @@ public class TextScanning {
 		}
 		System.out.println("Image gettring process Stoped");
 		try {
-			tr.setDatapath("Tess4J\\tessdata");
+			tr.setDatapath(tessDataPath);
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(getImage);
 	        BufferedImage image = ImageIO.read(inputStream);
 	        text = tr.doOCR(image);
