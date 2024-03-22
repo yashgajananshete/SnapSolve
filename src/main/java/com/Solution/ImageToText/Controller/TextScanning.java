@@ -30,6 +30,8 @@ public class TextScanning {
 		String text1 ="below is the question give me only ans for that not explanation";
 		byte[] getImage = null;
 		Tesseract tr = new Tesseract();
+		tr.setDatapath(tessDataPath);
+		System.out.println("Datapath set");
 		System.out.println("Starting Getting Image...");
 		try {
 			getImage = iService.getImageFromDatabase();
@@ -42,7 +44,7 @@ public class TextScanning {
 		}
 		System.out.println("Image gettring process Stoped");
 		try {
-			tr.setDatapath(tessDataPath);
+//			tr.setDatapath(tessDataPath);
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(getImage);
 	        BufferedImage image = ImageIO.read(inputStream);
 	        text = tr.doOCR(image);
