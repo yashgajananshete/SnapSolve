@@ -24,8 +24,7 @@ RUN mkdir -p $TESSDATA_PREFIX && \
     chmod -R 755 $TESSDATA_PREFIX
 
 # Copy your tessdata files to the container
-COPY tessdata $TESSDATA_PREFIX
+COPY Tess4J/tessdata $TESSDATA_PREFIX
 
 # Run the application
 ENTRYPOINT [ "java", "-jar", "demo.jar"]
-

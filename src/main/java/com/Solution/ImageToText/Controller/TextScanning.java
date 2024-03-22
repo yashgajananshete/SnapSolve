@@ -1,4 +1,3 @@
-
 package com.Solution.ImageToText.Controller;
 
 import java.awt.image.BufferedImage;
@@ -55,12 +54,7 @@ public class TextScanning {
             System.out.println("IO Exception:");
             e.printStackTrace();
         }
-        System.out.println(oneLineString);
-		if(oneLineString != " ")
-			return oneLineString+""+text1;
-		else
-			return "write a msg for user that there is some problem occurs";
-	
-       
+        
+        return oneLineString + "" + text1;
     }
 }
