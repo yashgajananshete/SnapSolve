@@ -19,5 +19,13 @@ EXPOSE 8080
 # Set environment variable for Tesseract data path
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
 
+# Ensure the tessdata directory is present
+RUN mkdir -p $TESSDATA_PREFIX && \
+    chmod -R 755 $TESSDATA_PREFIX
+
+# Copy your tessdata files to the container
+COPY tessdata $TESSDATA_PREFIX
+
 # Run the application
-ENTRYPOINT [ "java","-jar","demo.jar"]
+ENTRYPOINT [ "java", "-jar", "demo.jar"]
+
